@@ -1,26 +1,17 @@
-import express from 'express'
+import BoardController from './infra/controller/BoardController'
+import PgPromiseConnection from './infra/database/PgPromisConnection'
+import ExpressAdapter from './infra/http/ExpressAdapter'
 
-import BoardService from './service/BoardService'
-import ColumnService from './service/ColumnService'
-import CardService from './service/CardService'
 
-const app = express()
-app.get('/boards', async function(req,res){
-    const boardService = new BoardService()
-    const boards = await boardService.getBoards()
-    res.json(boards)
-})
+const connection = new PgPromiseConnection()
+const http = new ExpressAdapter()
 
-app.get('/boards/:idBoard/columns', async function(req,res){
-    const columnService = new ColumnService()
-    const columns = await columnService.getColumns(parseInt(req.params.idBoard))
-    res.json(columns)
-})
+new BoardController(http,connection)
 
-app.get('/boards/:idBoard/columns/:idColumn/cards', async function(req,res){
-    const cardService = new CardService()
-    const cards = await cardService.getCards(parseInt(req.params.idColumn))
-    res.json(cards)
-})
+http.listen(3000)
 
-app.listen(3000)
+
+
+
+
+
